@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blitzen Lighting • Wrap Calculator</title>
+  <meta name="theme-color" content="#0b1220" />
+  <style>
+    /* --- Blitzen Branding --- */
+    :root{
+      --blitzen-blue:#0ea5e9;     /* electric blue accent */
+      --blitzen-deep:#0b1220;     /* deep navy bg */
+      --blitzen-panel:#0f172a;    /* card bg */
+      --blitzen-ink:#f5f7fb;      /* text */
+      --blitzen-red:#ef4444;      /* logo accent */
+      --ring: 0 0 0 2px rgba(14,165,233,.25);
+      --gap:14px; --radius:16px; --shadow:0 8px 24px rgba(2,8,23,.35);
+    }
+    *{box-sizing:border-box;font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"}
+    html,body{height:100%}
+    body{margin:0;background: radial-gradient(1200px 600px at 20% -10%,rgba(14,165,233,.12),transparent),
+                              radial-gradient(1200px 700px at 110% 20%,rgba(239,68,68,.10),transparent),
+                              var(--blitzen-deep);
+         color:var(--blitzen-ink);display:grid;place-items:start center;min-height:100svh;padding:24px}
+
+    /* Header / brand bar */
+    .brand{width:min(960px,100%);margin-inline:auto;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--blitzen-ink)}
+    .logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--blitzen-blue),#38bdf8);
+               display:grid;place-items:center;box-shadow:0 6px 18px rgba(14,165,233,.35)}
+    .logo-mark svg{width:20px;height:20px;fill:var(--blitzen-ink)}
+    .logo-text{font-weight:800;letter-spacing:.2px}
+    .logo-text b{color:var(--blitzen-red)}
+    .badge{margin-left:auto;background:rgba(14,165,233,.15);border:1px solid rgba(14,165,233,.35);color:#e6f6fe;
+           padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+
+    /* Card */
+    .card{width:min(960px,100%);background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--blitzen-panel);
+          border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    header{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center}
+    header h1{margin:0;font-size:clamp(18px,2.4vw,24px);letter-spacing:.3px}
+    header p{margin:0;opacity:.85;font-size:13px}
+
+    .grid{display:grid;gap:var(--gap);grid-template-columns:repeat(12,1fr);padding:20px}
+    .field{grid-column:span 12;display:grid;gap:8px}
+    .field.third{grid-column:span 4}
+    label{font-size:13px;opacity:.95}
+    input,select{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0b1326;color:var(--blitzen-ink);outline:none}
+    input:focus,select:focus{box-shadow:var(--ring);border-color:#38bdf8}
+    input[readonly]{opacity:.85}
+
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    button{appearance:none;padding:12px 16px;border-radius:12px;border:0;font-weight:700;cursor:pointer}
+    .primary{background:var(--blitzen-blue);color:white}
+    .secondary{background:#14213a;color:#e8ecf8;border:1px solid rgba(255,255,255,.08)}
+
+    .results{background:#0b1326;border-top:1px solid rgba(255,255,255,.08);padding:18px 20px;display:grid;gap:12px}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .kpi{background:#0f172a;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px}
+    .kpi b{display:block;font-size:12px;opacity:.75;margin-bottom:6px}
+    .kpi span{font-size:22px;font-weight:800}
+    .note{font-size:12px;opacity:.8}
+    .hidden{display:none}
+
+    .brand-footer{width:min(960px,100%);margin-inline:auto;margin-top:12px;display:flex;justify-content:space-between;align-items:center;opacity:.9;font-size:12px}
+    .brand-footer a{color:#d3ecff;text-decoration:none}
+
+    @media (max-width:860px){.field.third{grid-column:span 12}.kpis{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <!-- Brand bar -->
+  <div class="brand" aria-hidden="true">
+    <a class="logo" href="#" title="Blitzen Lighting">
+      <span class="logo-mark" aria-hidden="true">
+        <!-- simple antler-like glyph -->
+        <svg viewBox="0 0 24 24"><path d="M5 6c3 0 4 3 4 6v6h2V9l2-3 2 3v9h2V9c0-3 1-6 4-6-2 0-4 1-5 3-1-2-3-3-5-3S6 4 5 6z"/></svg>
+      </span>
+      <span class="logo-text">Blitzen <b>Lighting</b></span>
+    </a>
+    <span class="badge">Field tool</span>
+  </div>
+
+  <div class="card" role="application" aria-label="Blitzen Lighting Wrap Calculator">
+    <header>
+      <div>
+        <h1>Wrap Calculator</h1>
+        <p>Spiral wraps on round or square columns. Fixed 4 in spacing, 23 ft strands.</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="field third">
+        <label for="shape">Column shape</label>
+        <select id="shape">
+          <option value="round">Round</option>
+          <option value="square">Square</option>
+        </select>
+      </div>
+
+      <div class="field third" id="diameterField">
+        <label for="diameter">Diameter (inches)</label>
+        <input id="diameter" type="number" min="1" step="0.01" placeholder="e.g. 21" />
+      </div>
+
+      <div class="field third hidden" id="sideField">
+        <label for="side">Side width for square column (inches)</label>
+        <input id="side" type="number" min="1" step="0.01" placeholder="e.g. 10" />
+      </div>
+
+      <div class="field third">
+        <label for="height">Column wrap height to cover (feet)</label>
+        <input id="height" type="number" min="0.1" step="0.01" placeholder="e.g. 11" />
+      </div>
+
+      <div class="field third">
+        <label>Vertical spacing (inches)</label>
+        <input value="4" readonly />
+      </div>
+
+      <div class="field third">
+        <label>Strand length (feet)</label>
+        <input value="23" readonly />
+      </div>
+
+      <div class="field" style="grid-column: span 12;">
+        <div class="actions">
+          <button class="primary" id="calcBtn">Calculate</button>
+          <button class="secondary" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="results" id="results" aria-live="polite">
+      <div class="kpis">
+        <div class="kpi"><b>Total light length</b><span id="totalLen">0 ft</span></div>
+        <div class="kpi"><b>Estimated wraps</b><span id="wraps">0</span></div>
+        <div class="kpi"><b>Length per wrap</b><span id="wrapLen">0 ft</span></div>
+        <div class="kpi"><b>Strands needed</b><span id="strands">0</span></div>
+      </div>
+      <div class="note" id="details"></div>
+      <div class="note" id="example"></div>
+    </div>
+  </div>
+
+  <div class="brand-footer">
+    <span>© Blitzen Lighting • Tampa Bay</span>
+    <span>Support: <a href="tel:17273319014">727-331-9014</a></span>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const shape = $("shape");
+    const diameterField = $("diameterField");
+    const sideField = $("sideField");
+
+    shape.addEventListener("change", () => {
+      const isRound = shape.value === "round";
+      diameterField.classList.toggle("hidden", !isRound);
+      sideField.classList.toggle("hidden", isRound);
+    });
+
+    function feet(n){ return `${n.toFixed(2)} ft`; }
+
+    function calc(){
+      const isRound = shape.value === "round";
+      const diameterIn = parseFloat($("diameter").value || "0");
+      const sideIn = parseFloat($("side").value || "0");
+      const heightFt = parseFloat($("height").value || "0");
+
+      const spacingIn = 4;   // fixed inches
+      const strandFt  = 23;  // fixed feet
+
+      if(heightFt <= 0 || (!isRound && sideIn <= 0) || (isRound && diameterIn <= 0)){
+        alert("Enter positive numbers for height and size.");
+        return;
+      }
+
+      const spacingFt = spacingIn / 12;
+      const perimeterFt = isRound ? Math.PI * (diameterIn / 12) : 4 * (sideIn / 12);
+
+      const wraps = heightFt / spacingFt;                    // helical passes
+      const lengthPerWrap = Math.sqrt(perimeterFt**2 + spacingFt**2);
+      const total = lengthPerWrap * wraps;
+
+      const exactStrands = total / strandFt;
+      const strandsNeeded = Math.ceil(exactStrands);         // always round up
+
+      $("totalLen").textContent = feet(total);
+      $("wraps").textContent = wraps.toFixed(1);
+      $("wrapLen").textContent = feet(lengthPerWrap);
+      $("strands").textContent = `${exactStrands.toFixed(2)} or ${strandsNeeded}`;
+
+      const detailText = `Perimeter ${feet(perimeterFt)}, spacing ${feet(spacingFt)}. Exact strands = total length ÷ 23 ft. Always use the rounded up value for ordering.`;
+      $("details").textContent = detailText;
+
+      const exampleNote = (isRound && Math.abs(heightFt - 11) < 1e-9 && Math.abs(diameterIn - 21) < 1e-9)
+        ? `Example check: 11 ft high, 21 in diameter yields ${exactStrands.toFixed(2)} or ${strandsNeeded} strands.`
+        : ``;
+      $("example").textContent = exampleNote;
+    }
+
+    $("calcBtn").addEventListener("click", calc);
+    $("resetBtn").addEventListener("click", () => {
+      document.querySelectorAll("input[type='number']").forEach(i => i.value = "");
+      $("shape").value = "round"; shape.dispatchEvent(new Event("change"));
+      $("totalLen").textContent = "0 ft"; $("wraps").textContent = "0"; $("wrapLen").textContent = "0 ft"; $("strands").textContent = "0"; $("details").textContent = ""; $("example").textContent = "";
+    });
+
+    // quick defaults for testing
+    $("diameter").value = 21; $("height").value = 11;
+  </script>
+</body>
+</html>
