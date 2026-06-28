@@ -128,10 +128,21 @@
     .hidden{display:none}
 
     @media (max-width:760px){
+      body{padding:14px}
+      .section{padding:18px 16px}
+      header{padding:16px}
       .row3{grid-template-columns:1fr}
       .field>label{min-height:0}
       .row2{grid-template-columns:1fr}
       .kpis{grid-template-columns:1fr 1fr}
+      .dia-row{gap:14px}
+      .dia-circle{flex:0 0 auto;width:170px;max-width:70%;margin:0 auto}
+      .dia-right{flex:1 1 100%;min-width:0}
+      .compare-img{max-width:100%}
+    }
+    @media (max-width:380px){
+      .locked-strip{grid-template-columns:1fr}
+      .seg button{min-width:0}
     }
   </style>
 </head>
